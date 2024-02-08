@@ -16,6 +16,11 @@ const Schedule = ({ navigation }) => {
           />
         </View>
       ))}
+
+      <Button
+        title="Medicine Prompt"
+        onPress={() => navigation.navigate("MedicinePrompt")}
+      />
     </View>
   );
 };
