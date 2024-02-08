@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { View, Text, Button, StyleSheet, TextInput } from "react-native";
-import { numberOfBoxes } from "../../assets/constants";
+import React, { useState, useEffect } from "react";
+import { View, Text, Button, StyleSheet } from "react-native";
+import { numberOfBoxes, getMedicineAmountKey } from "../../assets/constants";
 import MedicineAmountDisplay from "./MedicineAmountDisplay";
+import storage from "../../components/storage";
+import Paragraph from "../../components/Paragraph";
 
 function TimeGroup({ route, navigation }) {
   const [medicineAmounts, setMedicineAmounts] = useState(
@@ -14,7 +16,6 @@ function TimeGroup({ route, navigation }) {
   // Function to handle incrementing the medicine amount for a specific box
   const incrementMedicineAmount = (boxIndex) => {
     const updatedMedicineAmounts = [...medicineAmounts];
-    console.log("incrementing ", boxIndex);
     updatedMedicineAmounts[boxIndex]++;
     setMedicineAmounts(updatedMedicineAmounts);
   };
@@ -22,20 +23,54 @@ function TimeGroup({ route, navigation }) {
   // Function to handle decrementing the medicine amount for a specific box
   const decrementMedicineAmount = (boxIndex) => {
     const updatedMedicineAmounts = [...medicineAmounts];
-    console.log("decrementing");
     if (updatedMedicineAmounts[boxIndex] > 0) {
       updatedMedicineAmounts[boxIndex]--;
       setMedicineAmounts(updatedMedicineAmounts);
     }
   };
 
-  return (
-    <View>
-      <Text>
-        {groupName} {isEditing ? "- Editting" : ""}
-      </Text>
+  const onPressDoneEditButton = () => {
+    // if saving
+    if (isEditing) {
+      saveData();
+    }
+    setIsEditing(!isEditing);
+  };
 
-      <View style={styles.medicineAmountsCountainer}>
+  const saveData = async () => {
+    console.log("saving data");
+    storage.save({
+      key: getMedicineAmountKey(groupName),
+      data: {
+        medicineAmounts: [...medicineAmounts],
+      },
+    });
+  };
+
+  const loadData = async () => {
+    console.log("loading data");
+    console.log(getMedicineAmountKey(groupName)),
+      storage
+        .load({
+          key: getMedicineAmountKey(groupName),
+        })
+        .then((ret) => {
+          console.log(ret);
+          if (ret != null) setMedicineAmounts(ret.medicineAmounts);
+        });
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  return (
+    <View style={styles.timeGroupContainer}>
+      <Paragraph>Time:</Paragraph>
+
+      <Text>-----------------------------------</Text>
+
+      <View>
         {medicineAmounts.map((medicineAmount, index) => (
           <MedicineAmountDisplay
             key={index}
@@ -49,7 +84,7 @@ function TimeGroup({ route, navigation }) {
       </View>
       <Button
         title={isEditing ? "Done" : "Edit"}
-        onPress={() => setIsEditing(!isEditing)}
+        onPress={onPressDoneEditButton}
       />
     </View>
   );
@@ -67,7 +102,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
   },
-  medicineAmountsCountainer: {
+  timeGroupContainer: {
     marginHorizontal: 20,
     marginVertical: 20,
   },

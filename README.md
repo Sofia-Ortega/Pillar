@@ -2,7 +2,7 @@
 
 - run `npm install`
 - download **expo go** from the app store
-- run `expo start`
+- run `npx expo start`
 - if apple, use camera app to scan QR code that shows up in terminal. Otherwise, use **expo go** app's qr code scanner
 
 # Helpful Links
