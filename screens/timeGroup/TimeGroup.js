@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, StyleSheet, TextInput } from "react-native";
 import { numberOfBoxes } from "../../assets/constants";
-
-function medicineAmountDisplay(medicineAmount, boxNumber) {}
+import MedicineAmountDisplay from "./MedicineAmountDisplay";
 
 function TimeGroup({ route, navigation }) {
   const [medicineAmounts, setMedicineAmounts] = useState(
@@ -15,6 +14,7 @@ function TimeGroup({ route, navigation }) {
   // Function to handle incrementing the medicine amount for a specific box
   const incrementMedicineAmount = (boxIndex) => {
     const updatedMedicineAmounts = [...medicineAmounts];
+    console.log("incrementing ", boxIndex);
     updatedMedicineAmounts[boxIndex]++;
     setMedicineAmounts(updatedMedicineAmounts);
   };
@@ -22,6 +22,7 @@ function TimeGroup({ route, navigation }) {
   // Function to handle decrementing the medicine amount for a specific box
   const decrementMedicineAmount = (boxIndex) => {
     const updatedMedicineAmounts = [...medicineAmounts];
+    console.log("decrementing");
     if (updatedMedicineAmounts[boxIndex] > 0) {
       updatedMedicineAmounts[boxIndex]--;
       setMedicineAmounts(updatedMedicineAmounts);
@@ -33,25 +34,19 @@ function TimeGroup({ route, navigation }) {
       <Text>
         {groupName} {isEditing ? "- Editting" : ""}
       </Text>
-      {medicineAmounts.map((medicineAmount, index) => (
-        <View key={index}>
-          <Text>
-            {medicineAmount} pills from box {index}
-          </Text>
-          {isEditing && (
-            <View>
-              <Button
-                title="-"
-                onPress={() => decrementMedicineAmount(index)}
-              />
-              <Button
-                title="+"
-                onPress={() => incrementMedicineAmount(index)}
-              />
-            </View>
-          )}
-        </View>
-      ))}
+
+      <View style={styles.medicineAmountsCountainer}>
+        {medicineAmounts.map((medicineAmount, index) => (
+          <MedicineAmountDisplay
+            key={index}
+            medicineAmount={medicineAmount}
+            boxNumber={index}
+            isEditing={isEditing}
+            decrementMedicineAmount={decrementMedicineAmount}
+            incrementMedicineAmount={incrementMedicineAmount}
+          />
+        ))}
+      </View>
       <Button
         title={isEditing ? "Done" : "Edit"}
         onPress={() => setIsEditing(!isEditing)}
@@ -59,5 +54,23 @@ function TimeGroup({ route, navigation }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  input: {
+    width: 200,
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    paddingHorizontal: 10,
+  },
+  medicineAmountsCountainer: {
+    marginHorizontal: 20,
+    marginVertical: 20,
+  },
+});
 
 export default TimeGroup;
