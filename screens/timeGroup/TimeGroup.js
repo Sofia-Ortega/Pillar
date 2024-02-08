@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
-import { numberOfBoxes, getMedicineAmountKey } from "../../assets/constants";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import {
+  numberOfBoxes,
+  getMedicineAmountKey,
+  setData,
+} from "../../assets/constants";
 import MedicineAmountDisplay from "./MedicineAmountDisplay";
 import storage from "../../components/storage";
 import Paragraph from "../../components/Paragraph";
@@ -10,8 +15,14 @@ function TimeGroup({ route, navigation }) {
     Array(numberOfBoxes).fill(0)
   );
   const [isEditing, setIsEditing] = useState(false);
+  const [date, setDate] = useState(new Date());
 
   const { groupName } = route.params;
+
+  const onTimeChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setDate(currentDate);
+  };
 
   // Function to handle incrementing the medicine amount for a specific box
   const incrementMedicineAmount = (boxIndex) => {
@@ -39,11 +50,10 @@ function TimeGroup({ route, navigation }) {
 
   const saveData = async () => {
     console.log("saving data");
+    // const timestamp = date.getDate();
     storage.save({
       key: getMedicineAmountKey(groupName),
-      data: {
-        medicineAmounts: [...medicineAmounts],
-      },
+      data: setData(date, medicineAmounts),
     });
   };
 
@@ -55,8 +65,11 @@ function TimeGroup({ route, navigation }) {
           key: getMedicineAmountKey(groupName),
         })
         .then((ret) => {
-          console.log(ret);
-          if (ret != null) setMedicineAmounts(ret.medicineAmounts);
+          console.log(ret.time);
+          if (ret != null) {
+            if (ret.time) setDate(new Date(ret.time));
+            if (ret.medicineAmounts) setMedicineAmounts(ret.medicineAmounts);
+          }
         });
   };
 
@@ -66,8 +79,19 @@ function TimeGroup({ route, navigation }) {
 
   return (
     <View style={styles.timeGroupContainer}>
-      <Paragraph>Time:</Paragraph>
+      <View style={styles.timeContainer}>
+        <Paragraph>Time: </Paragraph>
 
+        <DateTimePicker
+          style={styles.dateTimePicker}
+          testID="dateTimePicker"
+          value={date}
+          mode="time"
+          is24Hour={true}
+          onChange={onTimeChange}
+          disabled={!isEditing}
+        />
+      </View>
       <Text>-----------------------------------</Text>
 
       <View>
@@ -104,6 +128,11 @@ const styles = StyleSheet.create({
   },
   timeGroupContainer: {
     marginHorizontal: 20,
+    marginVertical: 20,
+  },
+  timeContainer: {
+    display: "flex",
+    flexDirection: "row",
     marginVertical: 20,
   },
 });

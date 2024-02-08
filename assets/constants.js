@@ -9,3 +9,11 @@ export const numberOfBoxes = 3;
 export const getMedicineAmountKey = (group) => {
   return `${group}MedicineAmounts`;
 };
+
+// Data format:
+export const setData = (time, medicineAmounts) => {
+  return {
+    time: time,
+    medicineAmounts: [...medicineAmounts],
+  };
+};
