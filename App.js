@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Schedule from "./screens/schedule/Schedule";
 import TimeGroup from "./screens/timeGroup/TimeGroup";
 import MedicinePrompt from "./screens/medicinePrompt/MedicinePrompt";
+import TakeConfirmation from "./screens/medicinePrompt/TakeConfirmation";
 
 function HomeScreen({ navigation }) {
   return (
@@ -43,11 +44,12 @@ const Stack = createNativeStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="MedicinePrompt">
+      <Stack.Navigator initialRouteName="Schedule">
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
         <Stack.Screen name="Schedule" component={Schedule} />
         <Stack.Screen name="MedicinePrompt" component={MedicinePrompt} />
+        <Stack.Screen name="TakeConfirmation" component={TakeConfirmation} />
         <Stack.Screen
           name="TimeGroup"
           component={TimeGroup}

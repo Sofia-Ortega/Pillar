@@ -17,6 +17,8 @@ const Schedule = ({ navigation }) => {
         </View>
       ))}
 
+      <Text>-------------------------------------------</Text>
+
       <Button
         title="Medicine Prompt"
         onPress={() => navigation.navigate("MedicinePrompt")}
